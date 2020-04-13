@@ -9,7 +9,5 @@ public class Main {
         ForkJoinPool pool = new ForkJoinPool();
         Long sum = pool.invoke(new NodeValueSumCalculator(root));
         System.out.println(sum);
-
-
     }
 }
