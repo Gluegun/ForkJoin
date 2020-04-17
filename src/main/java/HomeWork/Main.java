@@ -9,6 +9,8 @@ public class Main {
         String url = "https://skillbox.ru";
         Links links = new Links(url);
         Set<String> invoke = new ForkJoinPool().invoke(links);
+        System.out.println(invoke.size());
+
 
     }
 }
