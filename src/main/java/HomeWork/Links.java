@@ -19,8 +19,7 @@ public class Links extends RecursiveTask<Set<String>> {
     private String url;
 
     @Getter
-    private static Set<String> links = new HashSet<>();
-
+    private static Set<String> visitedLinks = new HashSet<>();
 
     public Links(String url) {
         System.out.println(url);
@@ -30,23 +29,23 @@ public class Links extends RecursiveTask<Set<String>> {
 
     @Override
     public Set<String> compute() {
-        parsePage(url);
-        List<Links> taskList = new ArrayList<>();
-        for (String link : links) {
-            Links task = new Links(link);
-            task.fork();
-            taskList.add(task);
-        }
+        visitedLinks.add(url);
+        Set<String> linksInsideCompute = parsePage(url);
 
-        for (Links link : taskList) {
-            Set<String> join = link.join();
-            links.addAll(join);
+        List<Links> taskList = new ArrayList<>();
+
+        for (String link : linksInsideCompute) {
+            Links links = new Links(link);
+            links.fork();
+            taskList.add(links);
         }
-        return links;
+        taskList.forEach(Links::join);
+        return visitedLinks;
     }
 
     public Set<String> parsePage(String url) {
         Document doc;
+        Set<String> links = new HashSet<>();
 
         try {
             doc = Jsoup.connect(url).maxBodySize(0).get();
@@ -54,7 +53,7 @@ public class Links extends RecursiveTask<Set<String>> {
 
             for (Element element : elements) {
                 String link = element.absUrl("href");
-                if (link.startsWith("https://skillbox.ru/")) {
+                if (checkURL(link) && addNewURL(link)) {
                     links.add(link);
                 }
             }
@@ -63,5 +62,13 @@ public class Links extends RecursiveTask<Set<String>> {
             e.printStackTrace();
         }
         return links;
+    }
+
+    private synchronized boolean addNewURL(String url) {
+        return visitedLinks.add(url);
+    }
+
+    private static boolean checkURL(String url) {
+        return url.startsWith("https://skillbox.ru/") && url.endsWith("/");
     }
 }
