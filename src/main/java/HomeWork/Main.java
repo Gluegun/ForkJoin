@@ -25,9 +25,7 @@ public class Main {
 
     }
 
-    public static void writer(Set<String> strings, Path filePath) {
-        List<String> links = new ArrayList<>(strings);
-        links.sort(Comparator.naturalOrder());
+    public static void writer(Set<String> links, Path filePath) {
 
         List<String> newStrings = new LinkedList<>();
 
@@ -36,9 +34,7 @@ public class Main {
             string = string.substring(string.indexOf("skill"));
             String[] split = string.split("/");
 
-            for (int i = 0; i < split.length; i++) {
-                builder.append("\t");
-            }
+            builder.append("\t".repeat(split.length));
             builder.append(string);
             builder.insert(builder.indexOf("s"), "https://");
             newStrings.add(builder.toString());

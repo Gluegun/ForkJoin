@@ -6,10 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.RecursiveTask;
 
 public class Links extends RecursiveTask<Set<String>> {
@@ -19,7 +16,7 @@ public class Links extends RecursiveTask<Set<String>> {
     private String url;
 
     @Getter
-    private static Set<String> visitedLinks = new HashSet<>();
+    private static Set<String> visitedLinks = new TreeSet<>();
 
     public Links(String url) {
         System.out.println(url);
@@ -40,12 +37,20 @@ public class Links extends RecursiveTask<Set<String>> {
             taskList.add(links);
         }
         taskList.forEach(Links::join);
+        for (Links links : taskList) {
+            links.join();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         return visitedLinks;
     }
 
     public Set<String> parsePage(String url) {
         Document doc;
-        Set<String> links = new HashSet<>();
+        Set<String> links = new TreeSet<>();
 
         try {
             doc = Jsoup.connect(url).maxBodySize(0).get();
@@ -57,7 +62,7 @@ public class Links extends RecursiveTask<Set<String>> {
                     links.add(link);
                 }
             }
-            Thread.sleep(1000);
+            Thread.sleep(1200);
         } catch (Exception e) {
             e.printStackTrace();
         }
