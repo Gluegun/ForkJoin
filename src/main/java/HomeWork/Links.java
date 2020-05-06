@@ -37,14 +37,6 @@ public class Links extends RecursiveTask<Set<String>> {
             taskList.add(links);
         }
         taskList.forEach(Links::join);
-        for (Links links : taskList) {
-            links.join();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         return visitedLinks;
     }
 
@@ -62,7 +54,7 @@ public class Links extends RecursiveTask<Set<String>> {
                     links.add(link);
                 }
             }
-            Thread.sleep(1200);
+            Thread.sleep(200);
         } catch (Exception e) {
             e.printStackTrace();
         }

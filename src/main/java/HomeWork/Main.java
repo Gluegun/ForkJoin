@@ -21,11 +21,11 @@ public class Main {
 
         Path filePath = Paths.get("src/main/resources/siteMap.txt");
 
-        writer(invoke,filePath);
+        write(invoke,filePath);
 
     }
 
-    public static void writer(Set<String> links, Path filePath) {
+    public static void write(Set<String> links, Path filePath) {
 
         List<String> newStrings = new LinkedList<>();
 
